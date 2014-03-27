@@ -17,20 +17,31 @@ class ReadingListServletSpec extends ScalatraSuite with FunSuite {
     }
   }
 
-  test("Should get the book with id 1") {
+  test("Gets the book with id 1") {
     get("/book/1") {
       status should equal (200)
       body should equal (compact(render("book" -> BookRepository.all(0).toHash)))
     }
   }
 
-  test("Should get the book with isbn 978-0321146533") {
-    val expectedBook = Book(0, "TDD by Example", true, "978-0321146533", false)
+  test("Gets the book with isbn 978-0321146533") {
+    val expectedBook = Book(1, "TDD by Example", true, "978-0321146533", false)
     BookRepository.add(expectedBook)
 
     get("/book/isbn/978-0321146533") {
       status should equal (200)
       body should equal (compact(render("book" -> expectedBook.toHash)))
+    }
+  }
+
+  test("Adds book") {
+    val expectedAmountOfBooks = BookRepository.all.length + 1
+    val newBookData = compact(render(("title" -> "New Book") ~ ("isRead" -> true) ~ ("isbn" -> "LONGISBN") ~ ("isStarred" -> false)))
+
+    post("/book", newBookData) {
+      status should equal (200)
+      body should equal (newBookData)
+      BookRepository.all.length should equal (expectedAmountOfBooks)
     }
   }
 }

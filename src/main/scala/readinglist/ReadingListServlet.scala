@@ -28,4 +28,10 @@ class ReadingListServlet extends ReadinglistStack with JacksonJsonSupport {
     compact(render("book" -> BookRepository.withIsbn({params("isbn")}).toHash))
   }
 
+  post("/book") {
+    BookRepository.add(Book.from(request.body))
+
+    request.body
+  }
+
 }
