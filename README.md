@@ -3,7 +3,7 @@
 ## Build & Run ##
 
 ```sh
-$ cd ReadingList
+$ cd readinglist
 $ ./sbt
 > container:start
 > browse
