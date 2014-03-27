@@ -4,6 +4,9 @@ import org.scalatra._
 import scalate.ScalateSupport
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json._
+import org.json4s.JsonDSL._
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
 
 class ReadingListServlet extends ReadinglistStack with JacksonJsonSupport {
 
@@ -14,7 +17,7 @@ class ReadingListServlet extends ReadinglistStack with JacksonJsonSupport {
   }
 
   get("/") {
-    Map("message" -> "Hi, there!")
+    compact(render("books" -> new BookRepository().all.map(b => b.toHash)))
   }
 
 }

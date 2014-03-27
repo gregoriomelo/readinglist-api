@@ -29,7 +29,8 @@ object ReadinglistBuild extends Build {
         "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "container",
         "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container;provided;test" artifacts (Artifact("javax.servlet", "jar", "jar")),
         "org.scalatra" %% "scalatra-json" % "2.2.2",
-        "org.json4s"   %% "json4s-jackson" % "3.2.6"
+        "org.json4s"   %% "json4s-jackson" % "3.2.6",
+        "org.scalatra" %% "scalatra-scalatest" % "2.2.2" % "test"
       ),
       scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
         Seq(

@@ -1,16 +1,19 @@
 package readinglist
 
-import org.scalatra.test.specs2._
+import org.scalatra.test.scalatest._
+import org.scalatest.FunSuite
+import org.json4s.JsonDSL._
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
 
-// For more on Specs2, see http://etorreborre.github.com/specs2/guide/org.specs2.guide.QuickStart.html
-class ReadingListServletSpec extends ScalatraSpec { def is =
-  "GET / on ReadingListServlet"                     ^
-    "should return status 200"                  ! root200^
-                                                end
+class ReadingListServletSpec extends ScalatraSuite with FunSuite {
 
   addServlet(classOf[ReadingListServlet], "/*")
 
-  def root200 = get("/") {
-    status must_== 200
+  test("There are some books out there") {
+    get("/") {
+      status should equal (200)
+      body should equal (compact(render("books" -> new BookRepository().all.map(b => b.toHash))))
+    }
   }
 }
