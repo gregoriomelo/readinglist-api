@@ -1,9 +1,9 @@
 package readinglist
 
 object BookRepository {
-  val tdd = Book(1, "TDD by Example", true, "", false)
-  val rails4way = Book(2, "The Rails 4 Way", false, "", false)
-  val crucialConversations = Book(3, "Crucial Conversations", true, "", true)
+  val tdd = Book(1, "TDD by Example", true, "978-0321146533", false)
+  val rails4way = Book(2, "The Rails 4 Way", false, "978-0321944276", false)
+  val crucialConversations = Book(3, "Crucial Conversations", true, "978-0071771320", true)
 
   var books = List(tdd, rails4way, crucialConversations)
 
