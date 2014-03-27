@@ -17,7 +17,15 @@ class ReadingListServlet extends ReadinglistStack with JacksonJsonSupport {
   }
 
   get("/") {
-    compact(render("books" -> new BookRepository().all.map(b => b.toHash)))
+    compact(render("books" -> BookRepository.all.map(b => b.toHash)))
+  }
+
+  get("/book/:id") {
+    compact(render("book" -> BookRepository.all({params("id").toInt - 1}).toHash))
+  }
+
+  get("/book/isbn/:isbn") {
+    compact(render("book" -> BookRepository.withIsbn({params("isbn")}).toHash))
   }
 
 }
