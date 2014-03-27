@@ -2,16 +2,19 @@ package readinglist
 
 import org.scalatra._
 import scalate.ScalateSupport
+import org.json4s.{DefaultFormats, Formats}
+import org.scalatra.json._
 
-class ReadingListServlet extends ReadinglistStack {
+class ReadingListServlet extends ReadinglistStack with JacksonJsonSupport {
+
+  protected implicit val jsonFormats: Formats = DefaultFormats
+
+  before() {
+    contentType = formats("json")
+  }
 
   get("/") {
-    <html>
-      <body>
-        <h1>Hello, world!</h1>
-        Say <a href="hello-scalate">hello to Scalate</a>.
-      </body>
-    </html>
+    Map("message" -> "Hi, there!")
   }
-  
+
 }
