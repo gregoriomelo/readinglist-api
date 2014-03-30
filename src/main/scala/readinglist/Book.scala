@@ -6,12 +6,16 @@ import org.json4s.JsonDSL._
 
 case class Book(id: Long, title: String, isRead: Boolean, isbn: String, isStarred: Boolean) {
 
+  def this(title: String, isRead: Boolean, isbn: String, isStarred: Boolean) = {
+    this(0, title, isRead, isbn, isStarred)
+  }
+
   def toHash = {
     ("id" -> this.id) ~ ("title" -> this.title) ~ ("isRead" -> this.isRead) ~ ("isbn" -> this.isbn) ~ ("isStarred" -> this.isStarred)
   }
 
   def toJson = {
-    compact(render(this.toHash))
+    "{id:" + this.id + ",title:" + this.title + ",isRead:" + this.isRead + ",isbn:" + this.isbn + ",isStarred:" + this.isStarred + "}"
   }
 
   def exists ={
@@ -23,13 +27,8 @@ case class Book(id: Long, title: String, isRead: Boolean, isbn: String, isStarre
 object Book {
 
   def from(json: String): Book = {
-    val jsonData = parse(json)
-    val title = valueOf(jsonData, "title")
-    val isRead = valueOf(jsonData, "isRead").toBoolean
-    val isbn = valueOf(jsonData, "isbn")
-    val isStarred = valueOf(jsonData, "isStarred").toBoolean
-
-    new Book(0, title, isRead, isbn, isStarred)
+    implicit val formats = DefaultFormats
+    parse(json).extract[Book]
   }
 
   def valueOf(json: JValue, field: String): String = {
