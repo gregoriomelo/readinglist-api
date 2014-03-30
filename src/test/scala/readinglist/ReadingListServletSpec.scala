@@ -44,4 +44,16 @@ class ReadingListServletSpec extends ScalatraSuite with FunSuite {
       BookRepository.all.length should equal (expectedAmountOfBooks)
     }
   }
+
+  test("Removes a book") {
+    val removableBook = new Book(-1, "Remove this!", false, "REMOVE", false)
+    BookRepository.add(removableBook)
+    val expectedAmountOfBooks = BookRepository.all.length - 1
+
+    delete("/book/-1") {
+      status should equal (200)
+      body should equal (compact(render(removableBook.toJson)))
+      BookRepository.all.length should equal (expectedAmountOfBooks)
+    }
+  }
 }

@@ -13,7 +13,15 @@ object BookRepository {
     books :+= newBook
   }
 
+  def withId(id: Long) = {
+    books.find(book => book.id == id).getOrElse(new Book(0, "", false, "", false))
+  }
+
   def withIsbn(isbn: String) = {
     books.find(book => book.isbn == isbn).getOrElse(new Book(0, "", false, "", false))
+  }
+
+  def remove(book: Book) {
+    books = books diff List(book)
   }
 }

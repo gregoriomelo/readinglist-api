@@ -21,7 +21,7 @@ class ReadingListServlet extends ReadinglistStack with JacksonJsonSupport {
   }
 
   get("/book/:id") {
-    compact(render("book" -> BookRepository.all({params("id").toInt - 1}).toHash))
+    compact(render("book" -> BookRepository.withId({params("id").toInt}).toHash))
   }
 
   get("/book/isbn/:isbn") {
@@ -32,6 +32,15 @@ class ReadingListServlet extends ReadinglistStack with JacksonJsonSupport {
     BookRepository.add(Book.from(request.body))
 
     request.body
+  }
+
+  delete("/book/:id") {
+    val removableBook = BookRepository.withId({params("id").toInt})
+    println(BookRepository.all.length)
+    BookRepository.remove(removableBook)
+    println(BookRepository.all.length)
+
+    compact(render(removableBook.toJson))
   }
 
 }
