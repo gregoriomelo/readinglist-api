@@ -14,6 +14,10 @@ case class Book(id: Long, title: String, isRead: Boolean, isbn: String, isStarre
     compact(render(this.toHash))
   }
 
+  def exists ={
+    id > 0
+  }
+
 }
 
 object Book {
@@ -30,6 +34,10 @@ object Book {
 
   def valueOf(json: JValue, field: String): String = {
     compact(render(json \ field))
+  }
+
+  def missing = {
+    new Book(0, "", false, "", false)
   }
 
 }

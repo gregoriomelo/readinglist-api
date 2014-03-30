@@ -10,18 +10,33 @@ object BookRepository {
   def all = { books }
 
   def add(newBook: Book) = {
-    books :+= newBook
+    withIsbn(newBook.isbn) match {
+      case None => books :+= newBook
+      case _ => ;
+    }
   }
 
   def withId(id: Long) = {
-    books.find(book => book.id == id).getOrElse(new Book(0, "", false, "", false))
+    books.find(book => book.id == id)
   }
 
   def withIsbn(isbn: String) = {
-    books.find(book => book.isbn == isbn).getOrElse(new Book(0, "", false, "", false))
+    books.find(book => book.isbn == isbn)
   }
 
   def remove(book: Book) {
     books = books diff List(book)
+  }
+
+  def size = {
+    books.length
+  }
+
+  def clear {
+    books = List[Book]()
+  }
+
+  def reset {
+    books = List(tdd, rails4way, crucialConversations)
   }
 }

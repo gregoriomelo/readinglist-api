@@ -21,11 +21,18 @@ class ReadingListServlet extends ReadinglistStack with JacksonJsonSupport {
   }
 
   get("/book/:id") {
-    compact(render("book" -> BookRepository.withId({params("id").toInt}).toHash))
+    println(BookRepository.withId({params("id").toInt}))
+    BookRepository.withId({params("id").toInt}) match {
+      case Some(book) => Ok(asJson(book))
+      case None       => NotFound(asJson(Book.missing))
+    }
   }
 
   get("/book/isbn/:isbn") {
-    compact(render("book" -> BookRepository.withIsbn({params("isbn")}).toHash))
+    BookRepository.withIsbn({params("isbn")}) match {
+      case Some(book) => Ok(asJson(book))
+      case None       => NotFound(asJson(Book.missing))
+    }
   }
 
   post("/book") {
@@ -35,12 +42,14 @@ class ReadingListServlet extends ReadinglistStack with JacksonJsonSupport {
   }
 
   delete("/book/:id") {
-    val removableBook = BookRepository.withId({params("id").toInt})
-    println(BookRepository.all.length)
-    BookRepository.remove(removableBook)
-    println(BookRepository.all.length)
+    BookRepository.withId({params("id").toInt}) match {
+      case Some(removableBook) => { BookRepository.remove(removableBook); Ok(asJson(removableBook)) }
+      case None                => NotFound(asJson(Book.missing))
+    }
+  }
 
-    compact(render(removableBook.toJson))
+  def asJson(book: Book): String = {
+    "{book:" + book.toJson + "}"
   }
 
 }

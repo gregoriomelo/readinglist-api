@@ -1,14 +1,20 @@
 package readinglist
 
 import org.scalatra.test.scalatest._
-import org.scalatest.FunSuite
+import org.scalatest._
 import org.json4s.JsonDSL._
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
 
-class ReadingListServletSpec extends ScalatraSuite with FunSuite {
+class ReadingListServletSpec extends ScalatraSuite with FunSuite with BeforeAndAfterAll {
 
   addServlet(classOf[ReadingListServlet], "/*")
+
+  override def beforeAll(configMap: Map[String, Any]) {
+    super.beforeAll(configMap)
+
+    BookRepository.reset
+  }
 
   test("There are some books out there") {
     get("/") {
@@ -20,7 +26,14 @@ class ReadingListServletSpec extends ScalatraSuite with FunSuite {
   test("Gets the book with id 1") {
     get("/book/1") {
       status should equal (200)
-      body should equal (compact(render("book" -> BookRepository.all(0).toHash)))
+      body should equal ("{book:" + BookRepository.withId(1).get.toJson + "}")
+    }
+  }
+
+  test("Gets a 404 because the book does not exist") {
+    get("/book/-1") {
+      status should equal (404)
+      body should equal ("{book:" + Book.missing.toJson + "}")
     }
   }
 
@@ -30,7 +43,7 @@ class ReadingListServletSpec extends ScalatraSuite with FunSuite {
 
     get("/book/isbn/978-0321146533") {
       status should equal (200)
-      body should equal (compact(render("book" -> expectedBook.toHash)))
+      body should equal ("{book:" + expectedBook.toJson + "}")
     }
   }
 
@@ -52,8 +65,9 @@ class ReadingListServletSpec extends ScalatraSuite with FunSuite {
 
     delete("/book/-1") {
       status should equal (200)
-      body should equal (compact(render(removableBook.toJson)))
+      body should equal ("{book:" + removableBook.toJson + "}")
       BookRepository.all.length should equal (expectedAmountOfBooks)
     }
   }
+
 }
